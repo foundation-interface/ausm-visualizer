@@ -12,13 +12,22 @@ it runs from the menu bar. open the timeline or the overlay from its icon.
 
 needs macos and node 18+.
 
+this is an internal test version. ausm isn't on npm yet, so download and build it locally first, next to this repo:
+
+```sh
+git clone https://github.com/foundation-interface/ausm
+(cd ausm && npm install && npm run build)
+```
+
+then:
+
 ```sh
 git clone https://github.com/foundation-interface/ausm-visualizer && cd ausm-visualizer
 npm install
 npm start
 ```
 
-`npm install` finds ausm the way fairy cursor does: `AUSM_ROOT` if set, then a checkout next to this one (`../ausm`), otherwise the published `ausm` package. a local checkout needs `npm install && npm run build` in it first.
+`npm install` links your local ausm: `AUSM_ROOT` if set, otherwise a checkout next to this one (`../ausm`). without one, the install fails.
 
 macos gives permissions to the app you start this from (terminal, iterm…). give that app **accessibility** and **screen recording** in system settings → privacy & security, quit it and run again.
 
