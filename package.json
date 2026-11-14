@@ -1,0 +1,36 @@
+{
+  "name": "ausm-timeline",
+  "version": "0.1.0",
+  "private": true,
+  "description": "every ausm sensor on one live timeline, with the materials and tasks it finds",
+  "main": "app/dist/main.js",
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "node scripts/link-ausm.mjs",
+    "build": "tsc -p app/tsconfig.json && webpack --mode production --config app/timeline/webpack.config.js && webpack --mode production --config app/overlay/webpack.config.js",
+    "start": "npm run build && electron .",
+    "dev": "tsc -p app/tsconfig.json && concurrently -k -n timeline,overlay,tsc,electron \"webpack serve --mode development --config app/timeline/webpack.config.js\" \"webpack serve --mode development --config app/overlay/webpack.config.js\" \"tsc -p app/tsconfig.json --watch --preserveWatchOutput\" \"wait-on http://localhost:3002 http://localhost:3003 && NODE_ENV=development electron .\""
+  },
+  "dependencies": {
+    "lucide-react": "^0.562.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
+    "@babel/preset-react": "^7.22.0",
+    "@types/node": "^20.10.0",
+    "babel-loader": "^9.1.3",
+    "concurrently": "^8.2.0",
+    "css-loader": "^6.8.1",
+    "electron": "^28.3.3",
+    "html-webpack-plugin": "^5.5.3",
+    "style-loader": "^3.3.3",
+    "typescript": "^5.3.0",
+    "wait-on": "^7.2.0",
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  }
+}

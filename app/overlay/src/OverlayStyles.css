@@ -1,0 +1,877 @@
+/* ============================================================================
+   Overlay Styles
+   ============================================================================ */
+
+/* Shared font stack */
+.overlay-container,
+.status-indicator,
+.highlight-count,
+.selections-panel,
+.material-panel,
+.screenshot-panel,
+.copy-paste-panel,
+.window-label {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Root container - full screen, click-through */
+.overlay-container {
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  background-color: rgba(30, 60, 120, 0);
+}
+
+/* ============================================================================
+   Status Indicator (top-right badge)
+   ============================================================================ */
+
+.status-indicator {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 200, 100, 0.9);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  animation: pulse 2s infinite;
+}
+
+/* ============================================================================
+   Highlight Count Indicator (top-left badge)
+   ============================================================================ */
+
+.highlight-count {
+  position: fixed;
+  left: 20px;
+  top: 20px;
+  z-index: 1100;
+  padding: 6px 12px;
+  background: rgba(255, 220, 0, 0.9);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================================================
+   Window Label (positioned above window bounding box)
+   ============================================================================ */
+
+.window-label {
+  position: fixed;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.window-label-display-badge {
+  padding: 2px 6px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.window-label-app {
+  font-weight: 600;
+}
+
+.window-label-separator {
+  opacity: 0.8;
+}
+
+.window-label-title {
+  opacity: 0.9;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.window-label-coords {
+  padding: 2px 6px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  font-family: monospace;
+}
+
+.window-label-state {
+  padding: 2px 6px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* ============================================================================
+   Selections Panel (bottom-right)
+   ============================================================================ */
+
+.selections-panel {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  background: rgba(30, 30, 30, 0.95);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+}
+
+/* Task panel - larger, more information */
+.selections-panel.task-panel {
+  width: 420px;
+  max-width: min(420px, calc(100vw - 40px));
+  max-height: calc(100vh - 40px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.task-panel-item {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 14px 16px;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.task-panel-label {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 10px;
+  word-break: break-word;
+}
+
+.task-panel-description {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.task-panel-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+}
+
+.task-panel-meta-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.task-panel-meta-label {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  min-width: 72px;
+}
+
+.task-panel-mono {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  word-break: break-all;
+}
+
+.panel-header {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.selection-item {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.selection-text {
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.selection-meta {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+}
+
+.selection-meta-secondary {
+  opacity: 0.7;
+}
+
+/* ============================================================================
+   Left panels stack (task panel on top of material panel, same width)
+   ============================================================================ */
+
+.left-panels-stack {
+  position: fixed;
+  left: 0;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  z-index: 1200;
+  pointer-events: auto;
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+}
+
+.left-panels-stack:hover {
+  opacity: 0.1;
+}
+
+.left-panels-stack .selections-panel.task-panel {
+  position: static;
+  right: auto;
+  bottom: auto;
+  width: 340px;
+  max-width: 340px;
+  flex-shrink: 0;
+}
+
+.left-panels-stack .material-panel {
+  position: static;
+  left: auto;
+  bottom: auto;
+  width: 340px;
+  flex-shrink: 0;
+}
+
+/* ============================================================================
+   Material Events Panel (bottom-left; also used inside .left-panels-stack)
+   ============================================================================ */
+
+.material-panel {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  width: 340px;
+  max-height: calc(100vh - 40px);
+  background: rgba(20, 20, 20, 0.92);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  z-index: 1200;
+}
+
+.material-header {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.material-clear-btn {
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 10px;
+}
+
+.material-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.material-event-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 6px;
+}
+
+.material-frame-image {
+  width: 120px;
+  height: auto;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.material-event-meta-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.material-event-type-badge {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.material-event-app-badge {
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.material-event-material-type-badge {
+  padding: 2px 6px;
+  background: rgba(180, 130, 255, 0.25);
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(200, 170, 255, 0.95);
+}
+
+.material-event-title {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 11px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.material-event-footer {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 10px;
+  margin-top: 4px;
+  display: flex;
+  gap: 8px;
+}
+
+/* ============================================================================
+   Screenshot Panel (right side, above cursor panel)
+   ============================================================================ */
+
+.screenshot-panel {
+  position: fixed;
+  bottom: 20px;
+  right: 340px;
+  width: 320px;
+  background: rgba(20, 30, 20, 0.95);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  pointer-events: auto;
+  z-index: 1200;
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+}
+
+.screenshot-panel:hover {
+  opacity: 0.1;
+}
+
+.screenshot-panel-item {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.screenshot-panel-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.screenshot-panel-type-badge {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.3px;
+}
+
+.screenshot-panel-dims {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.screenshot-panel-time {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-left: auto;
+}
+
+.screenshot-panel-image {
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  border-radius: 6px;
+  object-fit: contain;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.screenshot-panel-bounds {
+  margin-top: 6px;
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ============================================================================
+   Copy/Paste Panel (right side)
+   ============================================================================ */
+
+.copy-paste-panel {
+  position: fixed;
+  bottom: 20px;
+  right: 680px;
+  width: 320px;
+  background: rgba(25, 25, 40, 0.95);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  pointer-events: auto;
+  z-index: 1200;
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+}
+
+.copy-paste-panel:hover {
+  opacity: 0.1;
+}
+
+.copy-paste-panel-item {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.copy-paste-panel-action {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.copy-paste-panel-action-badge {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.3px;
+}
+
+.copy-paste-panel-type-badge {
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.copy-paste-panel-meta {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.copy-paste-panel-time {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-left: auto;
+}
+
+.copy-paste-panel-content {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+  line-height: 1.4;
+  max-height: 120px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.copy-paste-panel-paths {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.copy-paste-panel-path-item {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: ui-monospace, monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.copy-paste-panel-footer {
+  margin-top: 6px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ============================================================================
+   Cursor++ Panel (bottom-right)
+   ============================================================================ */
+
+.cursor-panel {
+  position: fixed;
+  bottom: 20px;
+  right: 0;
+  width: 320px;
+  background: rgba(25, 25, 35, 0.95);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  pointer-events: auto;
+  z-index: 1200;
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+}
+
+.cursor-panel:hover {
+  opacity: 0.1;
+}
+
+.cursor-panel-item {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.cursor-panel-action {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.cursor-panel-action-badge {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.3px;
+}
+
+.cursor-panel-coords {
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.cursor-panel-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.cursor-panel-meta-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.cursor-panel-meta-label {
+  flex-shrink: 0;
+  min-width: 56px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.cursor-panel-screenshot {
+  margin-top: 8px;
+  width: 200px;
+  height: auto;
+  border-radius: 6px;
+  object-fit: contain;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ============================================================================
+   Utility Classes
+   ============================================================================ */
+
+.opacity-06 {
+  opacity: 0.6;
+}
+
+/* ============================================================================
+   Theme: light glass, ink text, one accent
+   Everything above sets layout; this block decides how it looks. It sits last so
+   it wins, and it overrides the per-state inline fills the components still set.
+   ============================================================================ */
+
+@font-face { font-family: "Barlow"; font-weight: 400; src: url("./fonts/Barlow-Regular.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-weight: 500; src: url("./fonts/Barlow-Medium.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-weight: 600; src: url("./fonts/Barlow-SemiBold.ttf") format("truetype"); }
+
+/* Grey carries hierarchy; the accent only marks what is happening right now. */
+.overlay-container {
+  --ink: #1d1d1f;
+  --ink-2: #52525b;
+  --ink-3: #6e6e73;
+  --ink-4: #a1a1a6;
+  --accent: hsl(212, 60%, 56%);
+  --accent-grad: linear-gradient(135deg, hsl(213, 64%, 62%), hsl(210, 68%, 50%));
+  --glass: linear-gradient(135deg, rgba(255, 255, 255, 0.86), rgba(250, 251, 253, 0.74));
+  --glass-blur: blur(18px) saturate(140%);
+  --glass-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 10px 30px rgba(15, 23, 42, 0.12), 0 2px 8px rgba(15, 23, 42, 0.06);
+  -webkit-font-smoothing: antialiased;
+}
+
+.overlay-container,
+.status-indicator,
+.highlight-count,
+.selections-panel,
+.material-panel,
+.screenshot-panel,
+.copy-paste-panel,
+.cursor-panel,
+.window-label {
+  font-family: "Barlow", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Panels float over other apps, so they are glass: readable on any background, never a dark slab. */
+.selections-panel,
+.material-panel,
+.screenshot-panel,
+.copy-paste-panel,
+.cursor-panel {
+  background: var(--glass) !important;
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow) !important;
+  border: none !important;
+  border-radius: 14px !important;
+  color: var(--ink-2);
+}
+
+/* Section names are tiny tracked labels, not headings. */
+.panel-header,
+.material-header {
+  color: var(--ink-4) !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Inner items are rows on the same sheet, so no inner cards and no colored left stripes. */
+.selection-item,
+.task-panel-item,
+.material-event-card,
+.screenshot-panel-item,
+.copy-paste-panel-item,
+.cursor-panel-item {
+  background: rgba(15, 23, 42, 0.035) !important;
+  border-left: none !important;
+  border-radius: 10px !important;
+}
+
+.selection-text,
+.task-panel-label,
+.material-event-title,
+.copy-paste-panel-content { color: var(--ink) !important; }
+.task-panel-description { color: var(--ink-2) !important; }
+.selection-meta,
+.selection-meta-secondary,
+.task-panel-meta,
+.material-event-footer,
+.copy-paste-panel-footer,
+.copy-paste-panel-meta,
+.copy-paste-panel-time,
+.copy-paste-panel-path-item,
+.cursor-panel-meta,
+.cursor-panel-coords,
+.screenshot-panel-dims,
+.screenshot-panel-time,
+.screenshot-panel-bounds { color: var(--ink-3) !important; }
+.task-panel-meta-label,
+.cursor-panel-meta-label { color: var(--ink-4) !important; }
+
+/* Badges are small ink pills, whatever state color a component passes in. */
+.cursor-panel-action-badge,
+.copy-paste-panel-action-badge,
+.screenshot-panel-type-badge,
+.material-event-type-badge {
+  background: var(--ink-2) !important;
+  color: #fff !important;
+  border-radius: 999px !important;
+  font-weight: 600 !important;
+}
+.copy-paste-panel-type-badge,
+.material-event-app-badge,
+.material-event-material-type-badge {
+  background: rgba(15, 23, 42, 0.06) !important;
+  color: var(--ink-2) !important;
+  border-radius: 999px !important;
+}
+
+/* Labels pinned to windows and fields: glass pills with ink text, so they sit on any app. */
+.window-label {
+  background: var(--glass) !important;
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow) !important;
+  border-radius: 999px !important;
+  color: var(--ink-2) !important;
+  font-size: 11.5px !important;
+}
+.window-label-app { color: var(--ink) !important; }
+.window-label-separator { color: var(--ink-4) !important; opacity: 1 !important; }
+.window-label-title { color: var(--ink-2) !important; }
+.window-label-display-badge,
+.window-label-state,
+.window-label-coords {
+  background: rgba(15, 23, 42, 0.06) !important;
+  color: var(--ink-3) !important;
+  border-radius: 999px !important;
+}
+.window-label-coords { font-family: ui-monospace, "SF Mono", Menlo, monospace !important; }
+
+/* The "overlay is on" badge is quiet glass with a breathing accent dot: alive, not an alert. */
+.status-indicator {
+  background: var(--glass) !important;
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow) !important;
+  color: var(--ink-2) !important;
+  font-weight: 500 !important;
+  border-radius: 999px !important;
+}
+.status-dot { background: var(--accent-grad) !important; animation: overlay-breathe 2.6s ease-in-out infinite !important; }
+@keyframes overlay-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 hsla(212, 60%, 56%, 0); }
+  50% { box-shadow: 0 0 0 4px hsla(212, 60%, 56%, 0.2); }
+}
+
+.highlight-count {
+  background: var(--glass) !important;
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow) !important;
+  color: var(--ink) !important;
+  border-radius: 999px !important;
+}
+
+.material-clear-btn { color: var(--ink-3) !important; }
+.material-frame-image,
+.screenshot-panel-image,
+.cursor-panel-screenshot { border-radius: 8px !important; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12); }
+
+@media (prefers-reduced-motion: reduce) {
+  .status-dot { animation: none !important; }
+}
+
+/* Panels can stack in one corner, so they need to be nearly opaque frost or the ones beneath ghost through. */
+.selections-panel,
+.material-panel,
+.screenshot-panel,
+.copy-paste-panel,
+.cursor-panel {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(250, 251, 253, 0.93)) !important;
+}
+
+/* State names arrive as SHOUTING_ENUMS; set them in quiet lowercase instead. */
+.window-label-state,
+.cursor-panel-action-badge,
+.copy-paste-panel-action-badge,
+.copy-paste-panel-type-badge,
+.screenshot-panel-type-badge,
+.material-event-type-badge { text-transform: lowercase; letter-spacing: 0.01em; }
+
+/* One dock in the bottom-right corner: panels stack upward and wrap into a new column
+   leftward, so they never sit on top of each other. Fixed rings and labels inside the
+   sections ignore this layout. */
+.overlay-dock {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column-reverse;
+  flex-wrap: wrap-reverse;
+  align-items: flex-end;
+  align-content: flex-end;
+  gap: 10px;
+  max-height: calc(100vh - 80px);
+  pointer-events: none;
+}
+.overlay-dock > .selections-panel,
+.overlay-dock > .cursor-panel,
+.overlay-dock > .copy-paste-panel,
+.overlay-dock > .screenshot-panel {
+  position: static !important;
+  inset: auto !important;
+  width: 300px !important;
+  max-width: 300px;
+  pointer-events: auto;
+  /* panels fade out under the pointer so you can see what they cover */
+  opacity: 0.94;
+  transition: opacity 0.2s ease;
+}
+.overlay-dock > .selections-panel:hover,
+.overlay-dock > .cursor-panel:hover,
+.overlay-dock > .copy-paste-panel:hover,
+.overlay-dock > .screenshot-panel:hover { opacity: 0.12; }

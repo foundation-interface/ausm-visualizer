@@ -1,0 +1,524 @@
+/* ── Type ── */
+
+/* Barlow ships with the app, so it reads the same with or without a network. */
+@font-face { font-family: "Barlow"; font-weight: 400; src: url("./fonts/Barlow-Regular.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-weight: 500; src: url("./fonts/Barlow-Medium.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-weight: 600; src: url("./fonts/Barlow-SemiBold.ttf") format("truetype"); }
+
+/* ── Tokens ── */
+
+/* Grey carries the hierarchy; the one blue only marks what's live right now. */
+:root {
+  --ink: #1d1d1f;
+  --ink-2: #52525b;
+  --ink-3: #6e6e73;
+  --ink-4: #a1a1a6;
+  --hairline: rgba(15, 23, 42, 0.07);
+  --wash: rgba(15, 23, 42, 0.05);
+
+  --accent: hsl(212, 60%, 56%);
+  --accent-grad: linear-gradient(135deg, hsl(213, 64%, 62%), hsl(210, 68%, 50%));
+  --accent-tint: hsla(212, 60%, 56%, 0.14);
+
+  --page: linear-gradient(125deg, #f6f6f4 0%, #f5feff 100%);
+  --glass: linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(250, 251, 253, 0.62));
+  --glass-blur: blur(18px) saturate(140%);
+  --glass-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 10px 30px rgba(15, 23, 42, 0.08),
+    0 2px 8px rgba(15, 23, 42, 0.04);
+  --elev-1: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
+  --elev-2: 0 4px 12px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-arrive: cubic-bezier(0.16, 1, 0.3, 1);
+
+  font-family: "Barlow", -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: border-box; }
+
+/* The page is one calm, barely tinted light; the app fills the window and never scrolls itself. */
+html, body, #root { height: 100%; margin: 0; }
+body { background: var(--page); overflow: hidden; user-select: none; }
+
+/* Thin blue-grey scrollbars that stay out of the way. */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(132, 172, 217, 0.45); border-radius: 999px; }
+
+code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.88em;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+/* ── App frame ── */
+
+.tl-app { height: 100vh; display: flex; flex-direction: column; padding: 0 16px 14px; }
+
+/* The header doubles as the title bar: it drags the window and leaves room for the traffic lights. */
+.tl-header {
+  flex: none;
+  height: 54px;
+  padding-left: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  -webkit-app-region: drag;
+}
+.tl-header__title { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.tl-header h1 { margin: 0; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; }
+.tl-header__tick { width: 1px; height: 12px; background: #d2d2d7; }
+.tl-header__sub { font-size: 13px; font-weight: 500; color: var(--ink-3); }
+
+/* Recording is the one live state up here, so only its dot gets the accent, and it breathes. */
+.tl-status { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; color: var(--ink-3); white-space: nowrap; }
+.tl-status__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ink-4); }
+.tl-status__dot.is-on { background: var(--accent-grad); animation: tl-breathe 2.6s ease-in-out infinite; }
+.tl-status__note { color: var(--ink-4); }
+
+@keyframes tl-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 hsla(212, 60%, 56%, 0); }
+  50% { box-shadow: 0 0 0 4px hsla(212, 60%, 56%, 0.18); }
+}
+
+/* Shown only when the page is opened outside the app: one plain explanation, centered. */
+.tl-offline { margin: auto; max-width: 440px; text-align: center; color: var(--ink-3); font-size: 14px; line-height: 1.55; }
+.tl-offline h2 { margin: 0 0 6px; font-size: 17px; font-weight: 600; color: var(--ink); letter-spacing: -0.01em; }
+
+.tl-main { flex: 1; min-height: 0; display: flex; }
+.tl-stack { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+/* ── Previews ── */
+
+.tl-media { display: flex; gap: 12px; min-height: 0; }
+.tl-media.has-camera > .live-camera-panel { flex: 0 0 32%; }
+
+/* Each preview is a glass card; what's on it (the screen) is the content, so the card stays quiet. */
+.live-screen-panel,
+.live-camera-panel {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px 12px;
+  border-radius: 16px;
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+  overflow: hidden;
+}
+
+/* Tiny tracked labels name the card without competing with the picture. */
+.live-screen-panel__title,
+.live-camera-panel__title {
+  flex: none;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.live-screen-panel__hint,
+.live-camera-panel__hint { font-weight: 500; letter-spacing: 0.02em; text-transform: none; color: var(--ink-4); }
+
+/* Empty and error states: one calm sentence, no colored banner. */
+.live-screen-panel__message,
+.live-camera-panel__message { max-width: 520px; font-size: 12.5px; line-height: 1.5; color: var(--ink-3); }
+
+/* The stage is a soft recess the screens sit in; it pans by drag. */
+.live-screen-panel__stage,
+.live-screen-panel__row,
+.live-camera-panel__row {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  border-radius: 10px;
+  background: var(--wash);
+  cursor: grab;
+}
+.live-screen-panel__row,
+.live-camera-panel__row { display: flex; gap: 10px; padding: 8px; }
+.pannable-viewport.is-panning { cursor: grabbing; }
+
+.live-screen-panel__layout { position: relative; width: 100%; max-height: 100%; margin: auto; }
+
+.live-screen-tile,
+.live-camera-tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.06);
+  box-shadow: var(--elev-1);
+}
+.live-screen-tile--positioned { position: absolute; }
+.live-screen-panel__row .live-screen-tile,
+.live-camera-tile { flex: 0 0 auto; height: 100%; aspect-ratio: 16 / 9; }
+.live-screen-tile__img,
+.live-camera-tile__img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+
+/* Display names float on matte glass in the corner, off the content. */
+.live-screen-tile__label,
+.live-camera-tile__label {
+  position: absolute;
+  left: 8px;
+  bottom: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--ink-2);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(10px);
+}
+.live-screen-tile__placeholder,
+.live-camera-tile__placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 11.5px;
+  color: var(--ink-4);
+}
+
+/* A new task rises onto the screen it came from, in glass, with the live accent dot. */
+.tl-task-toast {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  z-index: 5;
+  max-width: calc(100% - 32px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 15px 8px 11px;
+  border-radius: 999px;
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+  transform: translateX(-50%);
+  animation: tl-toast-in 320ms var(--ease-arrive) both;
+}
+.tl-task-toast__dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-grad); animation: tl-breathe 2.6s ease-in-out infinite; }
+.tl-task-toast__label { flex: none; font-size: 9.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-4); }
+.tl-task-toast__text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 600; letter-spacing: -0.005em; }
+.tl-task-toast__app { flex: none; font-size: 11.5px; color: var(--ink-3); }
+/* Label on top, the "what exactly" sentence under it in a quieter grey. */
+.tl-task-toast__body { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.tl-task-toast__detail { font-size: 12px; line-height: 1.4; color: var(--ink-2); max-width: 56ch; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+@keyframes tl-toast-in {
+  from { opacity: 0; transform: translate(-50%, 8px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* The resize handle is a small pill in the gap, not a bar across the page. */
+.tl-split { flex: none; height: 14px; display: grid; place-items: center; cursor: row-resize; }
+.tl-split::before { content: ""; width: 36px; height: 4px; border-radius: 999px; background: rgba(15, 23, 42, 0.1); transition: background 0.16s ease, width 0.2s var(--ease-out); }
+.tl-split:hover::before { width: 48px; background: rgba(15, 23, 42, 0.22); }
+
+/* ── Tracks ── */
+
+/* All tracks share one glass sheet; rows are parts of it, not cards. */
+.tl-panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+  overflow: hidden;
+}
+.tl-scroll { flex: 1; min-height: 0; overflow: auto; }
+.tl-inner { position: relative; }
+
+.tl-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  font-size: 13px;
+  color: var(--ink-3);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Rows are separated by one hairline seam: the grid here carries meaning (same time, different sense). */
+.tl-track { position: relative; display: flex; cursor: pointer; }
+.tl-track + .tl-track { box-shadow: inset 0 1px 0 var(--hairline); }
+
+/* Labels stay pinned while the tracks scroll under them, on a slightly denser frost. */
+.tl-track__label {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 12px 0 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-2);
+  background: rgba(251, 251, 250, 0.9);
+  backdrop-filter: blur(12px);
+  box-shadow: 1px 0 0 var(--hairline);
+}
+.tl-track__label svg { flex: none; color: var(--ink-3); }
+.tl-track__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tl-track__count { margin-left: auto; font-size: 10.5px; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; color: var(--ink-4); }
+
+/* A track with nothing on it yet steps back. */
+.tl-track.is-empty .tl-track__label { color: var(--ink-4); }
+.tl-track.is-empty .tl-track__label svg { color: var(--ink-4); }
+
+.tl-track__content { position: relative; flex: 1; }
+
+/* Point events are small slate dots; the hit area is larger than the dot so hovering doesn't flicker. */
+.tl-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--ink-3);
+  opacity: 0.7;
+  transition: transform 0.14s var(--ease-out), opacity 0.14s ease;
+}
+.tl-dot::before { content: ""; position: absolute; inset: -6px; }
+.tl-dot--quiet { width: 3px; height: 3px; margin: -1.5px 0 0 -1.5px; opacity: 0.35; }
+.tl-dot.is-hovered { z-index: 10; opacity: 1; transform: scale(1.6); background: var(--ink); }
+
+/* Things with a duration are soft pills tinted from the same grey. */
+.tl-span {
+  position: absolute;
+  height: 18px;
+  min-width: 4px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.07);
+  overflow: hidden;
+  transition: background 0.16s ease, box-shadow 0.2s ease;
+}
+.tl-span.is-hovered { z-index: 10; background: rgba(15, 23, 42, 0.12); }
+.tl-span__label {
+  display: block;
+  padding: 0 8px;
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Tasks are the point of the whole view: past ones are lifted glass chips. */
+.tl-span--task { background: rgba(255, 255, 255, 0.9); box-shadow: var(--elev-1); }
+.tl-span--task .tl-span__label { font-weight: 600; color: var(--ink); }
+.tl-span--task.is-hovered { background: #fff; box-shadow: var(--elev-2); }
+
+/* The current task is alive: an accent tint with a slow sweep along its bottom edge. */
+.tl-span--task.is-live { background: var(--accent-tint); box-shadow: none; }
+.tl-span--task.is-live::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 38%;
+  height: 2px;
+  background: linear-gradient(90deg, hsla(212, 60%, 56%, 0), hsla(212, 60%, 56%, 0.85), hsla(212, 60%, 56%, 0));
+  animation: tl-sweep 1.15s ease-in-out infinite;
+}
+@keyframes tl-sweep { from { transform: translateX(-100%); } to { transform: translateX(270%); } }
+
+/* The playhead is ink while you scrub, and the live accent while it follows real time. */
+.tl-playhead {
+  position: absolute;
+  top: 0;
+  z-index: 4;
+  width: 1.5px;
+  margin-left: -0.75px;
+  background: rgba(29, 29, 31, 0.45);
+  pointer-events: none;
+}
+.tl-playhead.is-live { background: var(--accent); }
+.tl-playhead.is-live::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  border-radius: 50%;
+  background: var(--accent-grad);
+  animation: tl-breathe 2.6s ease-in-out infinite;
+}
+
+/* The ruler is scale, not content: faint, and seamed onto the sheet above it. */
+.tl-ruler { flex: none; position: relative; box-shadow: inset 0 1px 0 var(--hairline); }
+.tl-ruler__canvas { display: block; }
+
+/* Event details float in glass above the mark, and never take pointer events. */
+.tl-tooltip {
+  position: fixed;
+  z-index: 1000;
+  max-width: 340px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(250, 251, 253, 0.84));
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+  font-size: 11.5px;
+  color: var(--ink-2);
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 10px));
+  animation: tl-tip-in 180ms var(--ease-out) both;
+}
+@keyframes tl-tip-in {
+  from { opacity: 0; transform: translate(-50%, calc(-100% - 6px)); }
+  to { opacity: 1; transform: translate(-50%, calc(-100% - 10px)); }
+}
+.tl-tooltip__head { display: flex; align-items: center; gap: 6px; color: var(--ink-3); }
+.tl-tooltip__kind { font-weight: 600; color: var(--ink-2); }
+.tl-tooltip__time { margin-left: auto; padding-left: 10px; font-size: 10.5px; font-variant-numeric: tabular-nums; color: var(--ink-4); white-space: nowrap; }
+.tl-tooltip__summary { margin-top: 6px; font-size: 12.5px; font-weight: 500; line-height: 1.4; color: var(--ink); }
+/* The task's current step reads as a second, quieter line under the label. */
+.tl-tooltip__detail { margin-top: 3px; font-size: 12px; line-height: 1.45; color: var(--ink-2); }
+.tl-tooltip__fields { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; margin: 8px 0 0; }
+.tl-tooltip__fields:empty { display: none; }
+.tl-tooltip__fields dt { font-size: 10.5px; color: var(--ink-4); }
+.tl-tooltip__fields dd { margin: 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 10px; color: var(--ink-3); }
+
+/* ── Controls ── */
+
+.tl-controls { flex: none; display: flex; flex-direction: column; gap: 10px; padding-top: 12px; }
+
+/* The overview spans the whole session; the lifted window shows the slice the tracks are showing. */
+.tl-overview { display: flex; align-items: center; gap: 16px; padding: 0 4px; }
+.tl-overview__time { flex: none; display: flex; align-items: baseline; gap: 5px; font-variant-numeric: tabular-nums; }
+.tl-overview__now { font-size: 13px; font-weight: 600; color: var(--ink); }
+.tl-overview__total { font-size: 12px; color: var(--ink-4); }
+.tl-overview__count { margin-left: 8px; font-size: 11px; letter-spacing: 0.02em; color: var(--ink-4); }
+
+.tl-overview__bar { position: relative; flex: 1; height: 20px; }
+.tl-overview__bar::before,
+.tl-overview__bar::after { content: ""; position: absolute; top: 8px; left: 0; height: 4px; border-radius: 999px; }
+.tl-overview__bar::before { right: 0; background: var(--wash); }
+.tl-overview__bar::after { width: calc(var(--progress) * 100%); background: rgba(29, 29, 31, 0.28); }
+.tl-overview__window { position: absolute; top: 4px; height: 12px; min-width: 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--elev-1); }
+
+/* The native range input sits on top for dragging and keyboard use; only its knob is visible. */
+.tl-overview__slider { position: absolute; inset: 0; z-index: 1; width: 100%; margin: 0; background: transparent; -webkit-appearance: none; appearance: none; cursor: pointer; }
+.tl-overview__slider::-webkit-slider-runnable-track { height: 20px; background: transparent; }
+.tl-overview__slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: 3px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.22), inset 0 1px 0 #fff;
+  transition: transform 0.14s var(--ease-out);
+}
+.tl-overview__slider:hover::-webkit-slider-thumb { transform: scale(1.12); }
+.tl-overview__slider:focus-visible { outline: none; }
+.tl-overview__slider:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 2px var(--ink), 0 1px 4px rgba(15, 23, 42, 0.22); }
+
+/* One glass bar holds every control, so the chrome reads as a single quiet object. */
+.tl-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  padding: 6px 14px 6px 6px;
+  border-radius: 999px;
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+}
+.tl-toolbar__gap { width: 1px; height: 16px; margin: 0 -6px; background: var(--hairline); }
+
+/* Icon buttons are bare until hovered, then lift onto a white wash. */
+.tl-icon-btn {
+  width: 30px;
+  height: 30px;
+  display: inline-grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: transform 0.14s ease, background 0.16s ease, color 0.16s ease;
+}
+.tl-icon-btn:hover { transform: translateY(-1px); background: rgba(255, 255, 255, 0.85); color: var(--ink); }
+.tl-icon-btn--small { width: 24px; height: 24px; }
+.tl-icon-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* Recording is alive, so the pause button carries the accent while it runs. */
+.tl-record.is-on { color: var(--accent); background: var(--accent-tint); }
+.tl-record.is-on:hover { color: var(--accent); background: hsla(212, 60%, 56%, 0.2); }
+
+.tl-segment,
+.tl-zoom { display: flex; align-items: center; gap: 8px; }
+.tl-segment__label { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-4); }
+
+/* Choices share one recessed track; the chosen one is ink, never blue. */
+.tl-segment__track { display: inline-flex; padding: 2px; border-radius: 999px; background: var(--wash); }
+.tl-segment__option {
+  min-width: 30px;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: color 0.16s ease, background 0.16s ease, box-shadow 0.2s ease;
+}
+.tl-segment__option:hover { color: var(--ink); }
+.tl-segment__option.is-on { background: var(--ink); color: #fff; box-shadow: 0 2px 8px rgba(31, 41, 55, 0.25); }
+.tl-segment__option:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+.tl-zoom__value { min-width: 58px; text-align: center; font-size: 11.5px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+
+/* ── Calm mode ── */
+
+/* With reduced motion, live things stop breathing and sweeping; state still shows through color. */
+@media (prefers-reduced-motion: reduce) {
+  .tl-status__dot.is-on,
+  .tl-task-toast__dot,
+  .tl-playhead.is-live::before { animation: none; }
+  .tl-span--task.is-live::after { animation: none; transform: none; width: 100%; opacity: 0.5; }
+  .tl-task-toast,
+  .tl-tooltip { animation: none; }
+  .tl-icon-btn,
+  .tl-dot,
+  .tl-split::before { transition: none; }
+  .tl-icon-btn:hover { transform: none; }
+}
+
+/* ── Fixes ── */
+
+/* The live playhead sits on the right edge; clip it so it never adds a sideways scroll of its own. */
+.tl-inner { overflow: clip; }
+
+/* Previews pan by drag, so their scrollbars are just noise. */
+.pannable-viewport { scrollbar-width: none; }
+.pannable-viewport::-webkit-scrollbar { display: none; }
