@@ -1,5 +1,5 @@
 /**
- * ausm timeline: Electron host for the timeline and overlay apps.
+ * ausm visualizer: Electron host for the timeline and overlay apps.
  *
  * Layout:
  *   main.ts              — Electron main process
@@ -173,7 +173,7 @@ app.on("before-quit", () => {
   console.log("[Main] Cleanup complete");
 });
 
-console.log("[Main] ausm timeline starting...");
+console.log("[Main] ausm visualizer starting...");
 console.log(
   "[Main] Native selection monitoring:",
   process.platform === "darwin" ? "enabled" : "not available (macOS only)",

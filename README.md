@@ -1,4 +1,4 @@
-# ausm timeline
+# ausm visualizer
 
 every [ausm](https://github.com/foundation-interface/ausm) sensor on one live timeline, with the materials you open and the tasks it detects.
 
@@ -13,7 +13,7 @@ it runs from the menu bar. open the timeline or the overlay from its icon.
 needs macos and node 18+.
 
 ```sh
-git clone https://github.com/foundation-interface/ausm-timeline && cd ausm-timeline
+git clone https://github.com/foundation-interface/ausm-visualizer && cd ausm-visualizer
 npm install
 npm start
 ```
@@ -24,7 +24,7 @@ macos gives permissions to the app you start this from (terminal, iterm…). giv
 
 - **tasks** need a model: put `CEREBRAS_API_KEY=...` in a `.env` here
 - **materials** need ausm's python helpers (see ausm's setup)
-- **camera**: set `AUSM_TIMELINE_CAMERA=1`
+- **camera**: set `AUSM_VISUALIZER_CAMERA=1`
 
 everything stays on your mac.
 

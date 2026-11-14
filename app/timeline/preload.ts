@@ -31,6 +31,6 @@ for (const channel of [
 
 contextBridge.exposeInMainWorld("timeline", {
   appName: () => "Timeline",
-  // runtime.ts only starts the camera when AUSM_TIMELINE_CAMERA=1
-  cameraEnabled: process.env.AUSM_TIMELINE_CAMERA === "1",
+  // runtime.ts only starts the camera when AUSM_VISUALIZER_CAMERA=1
+  cameraEnabled: process.env.AUSM_VISUALIZER_CAMERA === "1",
 });

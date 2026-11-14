@@ -1,5 +1,5 @@
 {
-  "name": "ausm-timeline",
+  "name": "ausm-visualizer",
   "version": "0.1.0",
   "private": true,
   "description": "every ausm sensor on one live timeline, with the materials and tasks it finds",

@@ -23,8 +23,8 @@ export const ausmRuntime: AusmRuntime = createRuntime({
     targetHeight: 1080,
   },
   // Camera streaming (webcam frames, same SHM/poll model as screen-stream).
-  // Off unless AUSM_TIMELINE_CAMERA=1, since it needs Camera permission.
-  enableCameraStreaming: process.env.AUSM_TIMELINE_CAMERA === "1",
+  // Off unless AUSM_VISUALIZER_CAMERA=1, since it needs Camera permission.
+  enableCameraStreaming: process.env.AUSM_VISUALIZER_CAMERA === "1",
   cameraStreaming: {
     fps: 10,
     targetHeight: 720,
