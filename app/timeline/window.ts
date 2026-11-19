@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
-import { setupAUSMElectronBridge } from "ausm/bridge/electron";
+import { setupAUSMElectronBridge } from "@ausm/ausm/bridge/electron";
 import { isDev, ausmLogging } from "../config";
 import { appState } from "../state";
 import { ausmRuntime } from "../runtime";

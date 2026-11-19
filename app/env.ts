@@ -30,10 +30,10 @@ function applyEnvFile(filePath: string): boolean {
   return true;
 }
 
-/** The ausm repo root when node_modules/ausm is a link into a local checkout. */
+/** The ausm repo root when node_modules/@ausm/ausm is a link into a local checkout. */
 function localAusmRoot(): string[] {
   try {
-    const pkg = fs.realpathSync(require.resolve("ausm/package.json"));
+    const pkg = fs.realpathSync(require.resolve("@ausm/ausm/package.json"));
     const root = path.resolve(path.dirname(pkg), "../..");
     return fs.existsSync(path.join(root, "packages/ausm")) ? [root] : [];
   } catch {

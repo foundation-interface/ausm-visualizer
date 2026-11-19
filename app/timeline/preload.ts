@@ -5,7 +5,7 @@
  * methods live on window.timeline.
  */
 import { contextBridge, ipcRenderer } from "electron";
-import { exposeAUSM } from "ausm/bridge/preload-api";
+import { exposeAUSM } from "@ausm/ausm/bridge/preload-api";
 
 try {
   exposeAUSM();
