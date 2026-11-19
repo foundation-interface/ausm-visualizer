@@ -16,7 +16,7 @@
  */
 import "./env";
 import { app, ipcMain } from "electron";
-import { setupAUSMIPCHandlers } from "ausm/bridge/electron";
+import { setupAUSMIPCHandlers } from "@ausm/ausm/bridge/electron";
 import { isDev, ausmLogging } from "./config";
 import { appState } from "./state";
 import { ausmRuntime } from "./runtime";

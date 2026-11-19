@@ -1,7 +1,7 @@
 import "./env";
 import { app } from "electron";
 import * as path from "path";
-import { createRuntime } from "ausm/runtime";
+import { createRuntime } from "@ausm/ausm/runtime";
 import { ausmLogging, materialBlacklist } from "./config";
 
 export type AusmRuntime = ReturnType<typeof createRuntime>;

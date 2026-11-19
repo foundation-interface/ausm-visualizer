@@ -6,7 +6,7 @@ export function rendererPreferences(
   return {
     nodeIntegration: false,
     contextIsolation: true,
-    // Preload imports ausm/bridge/preload-api. Electron 20+
+    // Preload imports @ausm/ausm/bridge/preload-api. Electron 20+
     // sandboxes renderers by default, and that isolate cannot resolve
     // package exports — so exposeAUSM() never runs and window.ausm is missing.
     sandbox: false,

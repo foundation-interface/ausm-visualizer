@@ -12,6 +12,7 @@
     "dev": "tsc -p app/tsconfig.json && concurrently -k -n timeline,overlay,tsc,electron \"webpack serve --mode development --config app/timeline/webpack.config.js\" \"webpack serve --mode development --config app/overlay/webpack.config.js\" \"tsc -p app/tsconfig.json --watch --preserveWatchOutput\" \"wait-on http://localhost:3002 http://localhost:3003 && NODE_ENV=development electron .\""
   },
   "dependencies": {
+    "@ausm/ausm": "^0.1.0",
     "lucide-react": "^0.562.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
